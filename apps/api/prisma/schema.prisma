@@ -47,7 +47,7 @@ model List {
   id         String     @id @default(uuid()) @db.Uuid
   name       String
   visibility Visibility @default(PRIVATE)
-  userId     String?
+  userId     String?    @db.Uuid
   user       User?      @relation(fields: [userId], references: [id])
   items      ListItem[]
   createdAt  DateTime   @default(now())
@@ -56,15 +56,14 @@ model List {
 
 model ListItem {
   id        String   @id @default(uuid()) @db.Uuid
-  listId    String
+  listId    String   @db.Uuid
   list      List     @relation(fields: [listId], references: [id])
-  bookId    String
+  bookId    String   @db.Uuid
   book      Book     @relation(fields: [bookId], references: [id])
-  placeId   String
+  placeId   String   @db.Uuid
   place     Place    @relation(fields: [placeId], references: [id])
   note      String?
   createdAt DateTime @default(now())
 
   @@unique([listId, bookId, placeId])
 }
-

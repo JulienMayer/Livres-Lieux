@@ -7,12 +7,17 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev -w apps/api & npm run dev -w apps/web",
+    "dev": "concurrently -n api,web -c green,blue \"npm run dev -w apps/api\" \"npm run dev -w apps/web\"",
     "build": "npm -w apps/api run build && npm -w apps/web run build",
     "typecheck": "npm -w apps/api run typecheck && npm -w apps/web run typecheck",
     "lint": "npm -w apps/api run lint || true && npm -w apps/web run lint || true",
     "db:up": "docker compose -f infra/docker-compose.yml up -d",
     "db:down": "docker compose -f infra/docker-compose.yml down -v"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.56.1"
   }
 }
-
