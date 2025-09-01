@@ -75,7 +75,7 @@ Une application web interactive qui permet aux utilisateurs de créer et partage
 ### 1. Cloner le projet
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/JulienMayer/Livres-Lieux.git
 cd livres-lieux
 ```
 
