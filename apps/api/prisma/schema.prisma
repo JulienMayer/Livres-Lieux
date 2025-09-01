@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+model User {
+  id          String   @id @default(uuid()) @db.Uuid
+  email       String   @unique
+  displayName String?
+  externalId  String?  @unique // e.g. Supabase user id, optional
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lists       List[]
+}
+
+model Book {
+  id        String   @id @default(uuid()) @db.Uuid
+  title     String
+  author    String
+  isbn      String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  items     ListItem[]
+}
+
+model Place {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  items     ListItem[]
+  // Note: A native PostGIS geometry/geography column can be added via SQL migration (not directly supported by Prisma types)
+}
+
+model List {
+  id         String     @id @default(uuid()) @db.Uuid
+  name       String
+  visibility Visibility @default(PRIVATE)
+  userId     String?
+  user       User?      @relation(fields: [userId], references: [id])
+  items      ListItem[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model ListItem {
+  id        String   @id @default(uuid()) @db.Uuid
+  listId    String
+  list      List     @relation(fields: [listId], references: [id])
+  bookId    String
+  book      Book     @relation(fields: [bookId], references: [id])
+  placeId   String
+  place     Place    @relation(fields: [placeId], references: [id])
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@unique([listId, bookId, placeId])
+}
+
